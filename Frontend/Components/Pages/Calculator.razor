@@ -13,7 +13,7 @@
         <div class="row g-3 align-items-end calculator-row">
             <div class="calculator-field calculator-field--select">
                 <label class="form-label" for="starting-rate">Starting rate</label>
-                <InputSelect id="starting-rate" class="form-select" @bind-Value="userInput.StartingRate">
+                <InputSelect id="starting-rate" class="form-select" @bind-Value="userInput!.StartingRate"> <!-- Is this hacky? -->
                     @foreach (var rate in allRates)
                     {
                         <option value="@rate">@rate</option>
@@ -51,11 +51,15 @@
     // it knows userInput is the model but not how the data arrives into the server so we have to use extra attribute
     // this is populated by blazor when the form is submitted, so we can use it in the submit handler
     [SupplyParameterFromForm]
-    public ConverterInput userInput { get; set; } = new() 
-    {
-        StartingRate = ExchangeRate.GBP,
-        Amount = 200,
-        TargetRate = ExchangeRate.EUR
+
+    // https://learn.microsoft.com/en-us/aspnet/core/diagnostics/bl0008?view=aspnetcore-10.0
+    // OnInitialized{Async} lifecycle methods used to avoid warnings
+    public ConverterInput? userInput { get; set; }
+
+    protected override void OnInitialized() => userInput ??= new() {
+        StartingRate = allRates[0],
+        Amount = 100,
+        TargetRate = allRates[allRates.Length - 1]
     };
 
     private Converter converter = new();
@@ -63,9 +67,14 @@
     private void HandleSubmit() {
         // rough way to check that data is being passed correctly, could be done using Logger
         Console.WriteLine("All user input:");
-        Console.WriteLine($"Starting rate: {userInput.StartingRate}");
-        Console.WriteLine($"Amount: {userInput.Amount}");
-        Console.WriteLine($"Target rate: {userInput.TargetRate}");  
+        Console.WriteLine($"Starting rate: {userInput?.StartingRate}");
+        Console.WriteLine($"Amount: {userInput?.Amount}");
+        Console.WriteLine($"Target rate: {userInput?.TargetRate}");  
+
+        if (userInput == null) {
+            Console.WriteLine("User input is null, cannot submit");
+            return;
+        }
         var result = converter.submit(userInput);
     }
 }
