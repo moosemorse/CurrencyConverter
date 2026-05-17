@@ -1,10 +1,11 @@
 <!-- 
 
     TODOs
+    1. For URLs, can we make it so if user has just "/" it defaults to smth like "/?from=GBP&to=USD&amount=1" instead of showing error about missing query params?
     2. Replace submit button with oninput event. 
     3. Find how to reduce duplication by abstracting select input into different component
     4. Make more pretty. https://jonhilton.net/pimp-up-blazor-edit-forms-with-tailwind-css/ or more AI
-    
+    5. Accessibility options for more languages, screen readers, etc. https://learn.microsoft.com/en-us/aspnet/core/blazor/accessibility?view=aspnetcore-10.0
 -->
 
 <!-- instead of dereferencing potential null userInput, we can just not render the form until it's initialised -->
@@ -84,6 +85,15 @@ else
 
     protected override void OnParametersSet()
     {
+
+        // I think this will do TODO 1. 
+        // We need to also inject NavigationManager
+        // NavigationManager.NavigateTo("/?from=GBP&to=EUR&amount=1", replace: true);
+
+        
+        // process is 1. set default values for query params
+        //            2. create new ConverterInput by parsing params
+
         userInput = new ConverterInput() {
             StartingRate = from is null ? defaultRate : convertExchangeRate(from),
             TargetRate = to is null ? defaultRate : convertExchangeRate(to),
