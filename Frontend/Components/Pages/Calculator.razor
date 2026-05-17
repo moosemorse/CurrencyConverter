@@ -8,7 +8,7 @@
     
 -->
 
-<EditForm Model="@userInput" FormName="enterInput">
+<EditForm Model="@userInput" FormName="enterInput" OnSubmit="HandleSubmit">
     <div class="calculator-card">
         <div class="row g-3 align-items-end calculator-row">
             <div class="calculator-field calculator-field--select">
@@ -23,7 +23,7 @@
 
             <div class="calculator-field calculator-field--amount">
                 <label class="form-label" for="amount">Amount</label>
-                <InputNumber TValue="int?" id="amount" class="form-control" @bind-Value="userInput.Amount" />
+                <InputNumber TValue="int" id="amount" class="form-control" @bind-Value="userInput.Amount" />
             </div>
 
             <div class="calculator-field calculator-field--select">
@@ -46,10 +46,26 @@
 @code {
 
     private ExchangeRate[] allRates = Enum.GetValues<ExchangeRate>();
+    
+    // we have to tell blazor the object that contains all the data entered by the user
+    // it knows userInput is the model but not how the data arrives into the server so we have to use extra attribute
+    // this is populated by blazor when the form is submitted, so we can use it in the submit handler
+    [SupplyParameterFromForm]
     public ConverterInput userInput { get; set; } = new() 
     {
         StartingRate = ExchangeRate.GBP,
         Amount = 200,
         TargetRate = ExchangeRate.EUR
     };
+
+    private Converter converter = new();
+
+    private void HandleSubmit() {
+        // rough way to check that data is being passed correctly, could be done using Logger
+        Console.WriteLine("All user input:");
+        Console.WriteLine($"Starting rate: {userInput.StartingRate}");
+        Console.WriteLine($"Amount: {userInput.Amount}");
+        Console.WriteLine($"Target rate: {userInput.TargetRate}");  
+        var result = converter.submit(userInput);
+    }
 }

@@ -15,13 +15,12 @@ namespace Frontend.Components.Models;
 
 public class Converter
 {
-    public required ExchangeRate StartingRate { get; set; }
-    public required int Amount { get; set; }
-    public required ExchangeRate TargetRate { get; set; }
     
-    public void submit()
+    public int submit(ConverterInput input)
     {
-        // handle submission (call service, update UI, etc.)
+        var result = 100; // TODO: placeholder, to be replaced by api client call to backend
+
+        return result;
     }
     
 }
