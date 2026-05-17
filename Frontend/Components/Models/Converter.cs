@@ -18,6 +18,13 @@ public class Converter
     
     public int submit(ConverterInput input)
     {
+
+        // rough way to check that data is being passed correctly, could be done using Logger
+        Console.WriteLine("All user input:");
+        Console.WriteLine($"Starting rate: {input.StartingRate}");
+        Console.WriteLine($"Amount: {input.Amount}");
+        Console.WriteLine($"Target rate: {input.TargetRate}");  
+
         var result = 100; // TODO: placeholder, to be replaced by api client call to backend
 
         return result;

@@ -74,16 +74,12 @@ else
     private Converter converter = new();
 
     private void HandleSubmit() {
-        // rough way to check that data is being passed correctly, could be done using Logger
-        Console.WriteLine("All user input:");
-        Console.WriteLine($"Starting rate: {userInput?.StartingRate}");
-        Console.WriteLine($"Amount: {userInput?.Amount}");
-        Console.WriteLine($"Target rate: {userInput?.TargetRate}");  
 
         if (userInput == null) {
             Console.WriteLine("User input is null, cannot submit");
             return;
         }
-        var result = converter.submit(userInput);
+
+        int result = converter.submit(userInput);
     }
 }
