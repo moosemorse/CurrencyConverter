@@ -71,6 +71,7 @@ else
         TargetRate = allRates[allRates.Length - 1]
     };
 
+    // TODO: we could inject the converter service here instead of creating a new instance, but for now this is fine
     private Converter converter = new();
 
     private void HandleSubmit() {
@@ -81,5 +82,9 @@ else
         }
 
         int result = converter.submit(userInput);
+
+        // from tutorial, if we injected NavigationManager we could navigate to new page
+        // by doing: NavigationManager.NavigateTo("/");
+        // but we just log the result for now, and also I don't think for now we want to navigate to any other page
     }
 }
