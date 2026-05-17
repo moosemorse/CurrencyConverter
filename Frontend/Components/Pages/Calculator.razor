@@ -7,6 +7,8 @@
     4. Make more pretty. https://jonhilton.net/pimp-up-blazor-edit-forms-with-tailwind-css/ or more AI
     5. Accessibility options for more languages, screen readers, etc. https://learn.microsoft.com/en-us/aspnet/core/blazor/accessibility?view=aspnetcore-10.0
 -->
+@rendermode InteractiveServer
+@inject NavigationManager NavigateManager
 
 <!-- instead of dereferencing potential null userInput, we can just not render the form until it's initialised -->
 @if (userInput is null)
@@ -83,6 +85,11 @@ else
     // OnInitialized{Async} lifecycle methods used to avoid warnings
     public ConverterInput? userInput { get; set; }
 
+
+    // TODO
+    // still some bugs I found that need to be fixed:
+    // 1. if you enter invalid data into form, rates are handled by convertExchangeRate but URI is not updated and left stale
+    // 2. Amounts if you enter something like '125.50.50' then blazor parsing fails and you get error message that it cannot parse
     protected override void OnParametersSet()
     {
 
@@ -99,6 +106,8 @@ else
             TargetRate = to is null ? defaultRate : convertExchangeRate(to),
             Amount = amount ?? 1
         };
+
+        
     }
 
     private ExchangeRate convertExchangeRate(string rate) => Enum.TryParse<ExchangeRate>(rate, true, out var result) ? result : defaultRate;
@@ -112,8 +121,7 @@ else
 
         double result = converter.submit(userInput);
 
-        // from tutorial, if we injected NavigationManager we could navigate to new page
-        // by doing: NavigationManager.NavigateTo("/");
-        // but we just log the result for now, and also I don't think for now we want to navigate to any other page
+        // note: for the history this took for ever and i think fix was just to add interactiveserver ??
+        NavigateManager.NavigateTo($"/?from={userInput.StartingRate}&to={userInput.TargetRate}&amount={userInput.Amount}");
     }
 }
