@@ -16,10 +16,14 @@ namespace Frontend.Components.Models;
 */
 public class ConverterInput
 {
-    [Required] // blazor makes sure user fills in field
-    public required ExchangeRate StartingRate { get; set; }
     [Required]
-    public required int Amount { get; set; }
+    public required ExchangeRate StartingRate { get; set; }
+    
+    // note: this is a nullable double because if the user doesn't input anything, it will be null and we can catch that with validation
+    // if not, then blazor uses inbuilt parsing and we get error msg " .. '' not valid"
+    [Required(ErrorMessage = "Enter amount to convert")]
+    [Range(0, double.MaxValue, ErrorMessage = "Amount must be a positive number")] // note: this doesn't handle 1E+200 and maybe don't want to allow huuuugee numbers + error message ugly
+    public double? Amount { get; set; }
     [Required]
     public required ExchangeRate TargetRate { get; set; }
 

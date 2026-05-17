@@ -16,9 +16,12 @@
 }
 else
 {
-    <EditForm Model="@userInput" FormName="enterInput" OnSubmit="HandleSubmit">
+    <EditForm Model="@userInput" FormName="enterInput" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator />
         <div class="calculator-card">
             <div class="row g-3 align-items-end calculator-row">
+
+                <!-- Select starting exchange rate -->
                 <div class="calculator-field calculator-field--select">
                     <label class="form-label" for="starting-rate">Starting rate</label>
                     <InputSelect id="starting-rate" class="form-select" @bind-Value="userInput.StartingRate">
@@ -29,9 +32,10 @@ else
                     </InputSelect>
                 </div>
 
+                <!-- Select amount to convert -->
                 <div class="calculator-field calculator-field--amount">
                     <label class="form-label" for="amount">Amount</label>
-                    <InputNumber TValue="int" id="amount" class="form-control" @bind-Value="userInput.Amount" />
+                    <InputNumber id="amount" class="form-control" @bind-Value="userInput.Amount" />
                 </div>
 
                 <div class="calculator-field calculator-field--select">
@@ -44,10 +48,12 @@ else
                     </InputSelect>
                 </div>
 
+                <!-- Target exchange -->
                 <div class="calculator-field calculator-action">
                     <button type="submit" class="btn btn-primary calculator-button">Convert</button>
                 </div>
             </div>
+        <ValidationSummary />
         </div>
     </EditForm>
 }
@@ -76,12 +82,9 @@ else
 
     private void HandleSubmit() {
 
-        if (userInput == null) {
-            Console.WriteLine("User input is null, cannot submit");
-            return;
-        }
+        ArgumentNullException.ThrowIfNull(userInput, nameof(userInput));
 
-        int result = converter.submit(userInput);
+        double result = converter.submit(userInput);
 
         // from tutorial, if we injected NavigationManager we could navigate to new page
         // by doing: NavigationManager.NavigateTo("/");

@@ -16,7 +16,7 @@ namespace Frontend.Components.Models;
 public class Converter
 {
     
-    public int submit(ConverterInput input)
+    public double submit(ConverterInput input)
     {
 
         // rough way to check that data is being passed correctly, could be done using Logger
