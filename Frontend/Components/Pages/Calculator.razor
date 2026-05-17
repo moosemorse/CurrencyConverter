@@ -75,6 +75,7 @@ else
     // TODO: can these all be abstracted somewhere? like a data validator class
     private ExchangeRate[] allRates = Enum.GetValues<ExchangeRate>();
     private ExchangeRate defaultRate = ExchangeRate.GBP;
+    private double defualtAmount = 1;
     
     // we have to tell blazor the object that contains all the data entered by the user
     // it knows userInput is the model but not how the data arrives into the server so we have to use extra attribute
@@ -89,28 +90,34 @@ else
     // TODO
     // still some bugs I found that need to be fixed:
     // 1. if you enter invalid data into form, rates are handled by convertExchangeRate but URI is not updated and left stale
+    // ok ok so I started doing 1. and just like the past 1-2 hours its just tireless validation so Ill come back to this later and actually 
+    //    get something more useful done
+    //    OKKK so I realised that if you do to=rubbish, then rubbish is not null so that means this is not a sufficient condition to check for validity
+    //    ok, i will leave this for TODO: we have a validation routine to check if entry maps to something in our enum
     // 2. Amounts if you enter something like '125.50.50' then blazor parsing fails and you get error message that it cannot parse
     protected override void OnParametersSet()
     {
 
-        // I think this will do TODO 1. 
-        // We need to also inject NavigationManager
-        // NavigationManager.NavigateTo("/?from=GBP&to=EUR&amount=1", replace: true);
+        // shuold probably be called like validated{field}
+        var fromURI = convertExchangeRate(from);
+        var toURI = convertExchangeRate(to);
+        var amountURI = (amount is not null && amount > 0) ? amount : defualtAmount;
 
-        
-        // process is 1. set default values for query params
-        //            2. create new ConverterInput by parsing params
+        if (from is null || to is null || amount is null)
+        {
+            NavigateManager.NavigateTo($"/?from={fromURI.ToString()}&to={toURI.ToString()}&amount={amountURI}", forceLoad: true);
+        }
 
+        // we get to this point if all query params are non null 
         userInput = new ConverterInput() {
-            StartingRate = from is null ? defaultRate : convertExchangeRate(from),
-            TargetRate = to is null ? defaultRate : convertExchangeRate(to),
-            Amount = amount ?? 1
+            StartingRate = fromURI,
+            TargetRate = toURI,
+            Amount = amountURI
         };
-
         
     }
 
-    private ExchangeRate convertExchangeRate(string rate) => Enum.TryParse<ExchangeRate>(rate, true, out var result) ? result : defaultRate;
+    private ExchangeRate convertExchangeRate(string? rate) => Enum.TryParse<ExchangeRate>(rate, true, out var result) ? result : defaultRate;
 
     // TODO: we could inject the converter service here instead of creating a new instance, but for now this is fine
     private Converter converter = new();
