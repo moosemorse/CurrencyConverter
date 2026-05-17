@@ -6,6 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+var calculatorApiUrl = "http://localhost:5054";
+
+//builder.Services.AddHttpClient, this is for dependency injection of http client
+//so if i AddSingleton<CalculatorService>() then I can inject into my service the api client
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

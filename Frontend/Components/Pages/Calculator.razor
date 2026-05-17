@@ -6,6 +6,8 @@
     3. Find how to reduce duplication by abstracting select input into different component
     4. Make more pretty. https://jonhilton.net/pimp-up-blazor-edit-forms-with-tailwind-css/ or more AI
     5. Accessibility options for more languages, screen readers, etc. https://learn.microsoft.com/en-us/aspnet/core/blazor/accessibility?view=aspnetcore-10.0
+    6. Should I make a separate page so that when we GET request it only returns the target amount??
+       E.g. theres a lot of clutter when I do smth like GET http://localhost:5054/?from=GBP&to=USD&amount=100 and I just want the number back, not the whole page.
 -->
 @rendermode InteractiveServer
 @inject NavigationManager NavigateManager
@@ -40,6 +42,7 @@ else
                     <InputNumber id="amount" class="form-control" @bind-Value="userInput.Amount" />
                 </div>
 
+                <!-- Target exchange -->
                 <div class="calculator-field calculator-field--select">
                     <label class="form-label" for="target-rate">Target rate</label>
                     <InputSelect id="target-rate" class="form-select" @bind-Value="userInput.TargetRate">
@@ -49,11 +52,14 @@ else
                         }
                     </InputSelect>
                 </div>
-
-                <!-- Target exchange -->
-                <div class="calculator-field calculator-action">
-                    <button type="submit" class="btn btn-primary calculator-button">Convert</button>
-                </div>
+                <!-- still a bit spaghetti but it should be impossible for user to send bad input to backend -->
+                 <a href="@getURI"
+                    class="btn btn-primary"
+                    style="@(userInput.Amount is null || userInput.Amount <= 0 ? "pointer-events: none; opacity: 0.5;" : "")"
+                    role="button"
+                    @onclick="HandleSubmit">
+                    Convert
+                </a>
             </div>
             <ValidationSummary />
         </div>
@@ -95,6 +101,8 @@ else
     //    OKKK so I realised that if you do to=rubbish, then rubbish is not null so that means this is not a sufficient condition to check for validity
     //    ok, i will leave this for TODO: we have a validation routine to check if entry maps to something in our enum
     // 2. Amounts if you enter something like '125.50.50' then blazor parsing fails and you get error message that it cannot parse
+    // 3. Extra validation perhap?? really extra is to make sure amount can only have two dp
+    // 4. Another bug --> Cannot parse the value '1E-45' as type 'System.Nullable`1[System.Double]' for 'amount'.
     protected override void OnParametersSet()
     {
 
@@ -117,6 +125,11 @@ else
         
     }
 
+    private string getURI() {
+        ArgumentNullException.ThrowIfNull(userInput);
+        return $"/?from={userInput.StartingRate}&to={userInput.TargetRate}&amount={userInput.Amount}";
+    }
+
     private ExchangeRate convertExchangeRate(string? rate) => Enum.TryParse<ExchangeRate>(rate, true, out var result) ? result : defaultRate;
 
     // TODO: we could inject the converter service here instead of creating a new instance, but for now this is fine
@@ -129,6 +142,6 @@ else
         double result = converter.submit(userInput);
 
         // note: for the history this took for ever and i think fix was just to add interactiveserver ??
-        NavigateManager.NavigateTo($"/?from={userInput.StartingRate}&to={userInput.TargetRate}&amount={userInput.Amount}");
+        NavigateManager.NavigateTo(getURI());
     }
 }
