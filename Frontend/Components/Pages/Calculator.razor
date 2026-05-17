@@ -1,7 +1,6 @@
 <!-- 
 
     TODOs
-    1. Add validation. https://docs.microsoft.com/en-us/aspnet/core/blazor/forms-validation?view=aspnetcore-7.0
     2. Replace submit button with oninput event. 
     3. Find how to reduce duplication by abstracting select input into different component
     4. Make more pretty. https://jonhilton.net/pimp-up-blazor-edit-forms-with-tailwind-css/ or more AI
@@ -9,7 +8,7 @@
 -->
 
 <!-- instead of dereferencing potential null userInput, we can just not render the form until it's initialised -->
-@if (userInput == null)
+@if (userInput is null)
 {
     <p>Loading...</p>
     return;
@@ -53,14 +52,26 @@ else
                     <button type="submit" class="btn btn-primary calculator-button">Convert</button>
                 </div>
             </div>
-        <ValidationSummary />
+            <ValidationSummary />
         </div>
     </EditForm>
 }
 
 @code {
 
+    // REMEMBER: dotnet watch might just not pick up changes so restart first
+    [SupplyParameterFromQuery(Name = "from")]
+    public string? from { get; set; }
+
+    [SupplyParameterFromQuery(Name = "to")]
+    public string? to { get; set; }
+
+    [SupplyParameterFromQuery(Name = "amount")]
+    public double? amount { get; set; }
+
+    // TODO: can these all be abstracted somewhere? like a data validator class
     private ExchangeRate[] allRates = Enum.GetValues<ExchangeRate>();
+    private ExchangeRate defaultRate = ExchangeRate.GBP;
     
     // we have to tell blazor the object that contains all the data entered by the user
     // it knows userInput is the model but not how the data arrives into the server so we have to use extra attribute
@@ -71,11 +82,16 @@ else
     // OnInitialized{Async} lifecycle methods used to avoid warnings
     public ConverterInput? userInput { get; set; }
 
-    protected override void OnInitialized() => userInput ??= new() {
-        StartingRate = allRates[0],
-        Amount = 100,
-        TargetRate = allRates[allRates.Length - 1]
-    };
+    protected override void OnParametersSet()
+    {
+        userInput = new ConverterInput() {
+            StartingRate = from is null ? defaultRate : convertExchangeRate(from),
+            TargetRate = to is null ? defaultRate : convertExchangeRate(to),
+            Amount = amount ?? 1
+        };
+    }
+
+    private ExchangeRate convertExchangeRate(string rate) => Enum.TryParse<ExchangeRate>(rate, true, out var result) ? result : defaultRate;
 
     // TODO: we could inject the converter service here instead of creating a new instance, but for now this is fine
     private Converter converter = new();
