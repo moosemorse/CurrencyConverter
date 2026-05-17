@@ -1,0 +1,51 @@
+<!-- This doesn't need to be routable, only used as a component -->
+
+<!-- 
+    EditForm performs nice validation, the blazor way 
+    Also, antiforgery tokens should be handled by middleware in App.razor so we don't need to worry about that here
+-->
+
+<EditForm Model="@userInput" FormName="enterInput">
+
+    <!-- Selecting starting rate -->
+    <div class="mb-3">
+        <label class="form-label" for="starting-rate">Starting rate</label>
+        <InputSelect id="starting-rate" class="form-select" @bind-Value="userInput.StartingRate">
+            @foreach (var rate in Enum.GetValues<ExchangeRate>())
+            {
+                <option value="@rate">@rate</option>
+            }
+        </InputSelect>
+    </div>
+
+    <!-- Entering the amount to be converted -->
+    <div class="mb-3">
+        <label class="form-label" for="amount">Amount</label>
+        <InputNumber TValue="int?" id="amount" class="form-control" @bind-Value="userInput.Amount" />
+    </div>
+
+    <!-- Selecting target rate -->
+    <div class="mb-3">
+        <label class="form-label" for="target-rate">Target rate</label>
+        <InputSelect id="target-rate" class="form-select" @bind-Value="userInput.TargetRate">
+            @foreach (var rate in Enum.GetValues<ExchangeRate>())
+            {
+                <option value="@rate">@rate</option>
+            }
+        </InputSelect>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Convert</button>
+</EditForm>
+
+@code {
+
+    <!-- The model the form binds to, this is then sent to the next stage -->
+    public ConverterInput userInput { get; set; } = new() 
+    {
+        StartingRate = ExchangeRate.GBP,
+        Amount = 200,
+        TargetRate = ExchangeRate.EUR
+    };
+
+}
