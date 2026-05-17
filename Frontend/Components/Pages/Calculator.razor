@@ -8,40 +8,49 @@
     
 -->
 
-<EditForm Model="@userInput" FormName="enterInput" OnSubmit="HandleSubmit">
-    <div class="calculator-card">
-        <div class="row g-3 align-items-end calculator-row">
-            <div class="calculator-field calculator-field--select">
-                <label class="form-label" for="starting-rate">Starting rate</label>
-                <InputSelect id="starting-rate" class="form-select" @bind-Value="userInput!.StartingRate"> <!-- Is this hacky? -->
-                    @foreach (var rate in allRates)
-                    {
-                        <option value="@rate">@rate</option>
-                    }
-                </InputSelect>
-            </div>
+<!-- instead of dereferencing potential null userInput, we can just not render the form until it's initialised -->
+@if (userInput == null)
+{
+    <p>Loading...</p>
+    return;
+}
+else
+{
+    <EditForm Model="@userInput" FormName="enterInput" OnSubmit="HandleSubmit">
+        <div class="calculator-card">
+            <div class="row g-3 align-items-end calculator-row">
+                <div class="calculator-field calculator-field--select">
+                    <label class="form-label" for="starting-rate">Starting rate</label>
+                    <InputSelect id="starting-rate" class="form-select" @bind-Value="userInput.StartingRate">
+                        @foreach (var rate in allRates)
+                        {
+                            <option value="@rate">@rate</option>
+                        }
+                    </InputSelect>
+                </div>
 
-            <div class="calculator-field calculator-field--amount">
-                <label class="form-label" for="amount">Amount</label>
-                <InputNumber TValue="int" id="amount" class="form-control" @bind-Value="userInput.Amount" />
-            </div>
+                <div class="calculator-field calculator-field--amount">
+                    <label class="form-label" for="amount">Amount</label>
+                    <InputNumber TValue="int" id="amount" class="form-control" @bind-Value="userInput.Amount" />
+                </div>
 
-            <div class="calculator-field calculator-field--select">
-                <label class="form-label" for="target-rate">Target rate</label>
-                <InputSelect id="target-rate" class="form-select" @bind-Value="userInput.TargetRate">
-                    @foreach (var rate in allRates)
-                    {
-                        <option value="@rate">@rate</option>
-                    }
-                </InputSelect>
-            </div>
+                <div class="calculator-field calculator-field--select">
+                    <label class="form-label" for="target-rate">Target rate</label>
+                    <InputSelect id="target-rate" class="form-select" @bind-Value="userInput.TargetRate">
+                        @foreach (var rate in allRates)
+                        {
+                            <option value="@rate">@rate</option>
+                        }
+                    </InputSelect>
+                </div>
 
-            <div class="calculator-field calculator-action">
-                <button type="submit" class="btn btn-primary calculator-button">Convert</button>
+                <div class="calculator-field calculator-action">
+                    <button type="submit" class="btn btn-primary calculator-button">Convert</button>
+                </div>
             </div>
         </div>
-    </div>
-</EditForm>
+    </EditForm>
+}
 
 @code {
 
