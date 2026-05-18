@@ -13,7 +13,8 @@ namespace Frontend.Components.Models;
     - im not sure if this is a c# thing but create separate namespaces for each stage (is everything a model?)
 */
 
-public class Converter
+// dependency injection for http client
+public class Converter(HttpClient httpClient)
 {
     
     public double submit(ConverterInput input)
