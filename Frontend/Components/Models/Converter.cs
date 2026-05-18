@@ -16,6 +16,9 @@ namespace Frontend.Components.Models;
 // dependency injection for http client
 public class Converter(HttpClient httpClient)
 {
+
+    private async Task<double> getConversionAsync(ConverterInput input)
+        => await httpClient.GetFromJsonAsync<double>($"?from={input.StartingRate}&to={input.TargetRate}&amount={input.Amount}");
     
     public double submit(ConverterInput input)
     {
@@ -26,9 +29,10 @@ public class Converter(HttpClient httpClient)
         Console.WriteLine($"Amount: {input.Amount}");
         Console.WriteLine($"Target rate: {input.TargetRate}");  
 
-        var result = 100; // TODO: placeholder, to be replaced by api client call to backend
+        //Task<double> result = getConversionAsync(input);
 
-        return result;
+        //return result.GetAwaiter().GetResult();
+        return 100;
     }
     
 }
