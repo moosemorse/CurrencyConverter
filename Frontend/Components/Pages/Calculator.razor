@@ -13,6 +13,10 @@
 @inject NavigationManager NavigateManager
 @inject Converter converter
 
+<!-- Note: If using SSR, use stream rendering, =>
+     helps interactivity by loading what's available while waiting for backend
+-->
+
 <!-- instead of dereferencing potential null userInput, we can just not render the form until it's initialised -->
 @if (userInput is null)
 {
@@ -21,7 +25,11 @@
 }
 else
 {
-    <EditForm Model="@userInput" FormName="enterInput" OnValidSubmit="HandleSubmit">
+    // note: in server side rendering, form submission causes full page refresh use 'Enhance' to avoid this
+    <EditForm
+        Model="@userInput"
+        FormName="enterInput"
+        OnValidSubmit="HandleSubmit">
         <DataAnnotationsValidator />
         <div class="calculator-card">
             <div class="row g-3 align-items-end calculator-row">
