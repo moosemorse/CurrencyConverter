@@ -7,7 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-var calculatorApiUrl = "http://localhost:5054";
+// Configuration to connect to client
+var calculatorApiUrl = builder.Configuration["ConverterAPIUrl"] ??
+    throw new Exception("ConverterAPIUrl not found in configuration");
 
 // variables need to be renamed to be more specific, e.g. ConverterClient or smth but for now its ok
 
