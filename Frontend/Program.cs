@@ -15,8 +15,6 @@ builder.Services.AddHttpClient<Converter>(
     client => client.BaseAddress = new Uri(calculatorApiUrl)
 );
 
-builder.Services.AddSingleton<Converter>();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -11,6 +11,7 @@
 -->
 @rendermode InteractiveServer
 @inject NavigationManager NavigateManager
+@inject Converter converter
 
 <!-- instead of dereferencing potential null userInput, we can just not render the form until it's initialised -->
 @if (userInput is null)
@@ -55,7 +56,7 @@ else
                 <!-- still a bit spaghetti but it should be impossible for user to send bad input to backend -->
                  <a href="@getURI"
                     class="btn btn-primary"
-                    style="@(userInput.Amount is null || userInput.Amount <= 0 ? "pointer-events: none; opacity: 0.5;" : "")"
+                    style="@(userInput.Amount is null || userInput.Amount < 0 ? "pointer-events: none; opacity: 0.5;" : "")"
                     role="button"
                     @onclick="HandleSubmit">
                     Convert
@@ -109,7 +110,7 @@ else
         // shuold probably be called like validated{field}
         var fromURI = convertExchangeRate(from);
         var toURI = convertExchangeRate(to);
-        var amountURI = (amount is not null && amount > 0) ? amount : defualtAmount;
+        var amountURI = (amount is not null && amount >= 0) ? amount : defualtAmount;
 
         if (from is null || to is null || amount is null)
         {
@@ -131,9 +132,6 @@ else
     }
 
     private ExchangeRate convertExchangeRate(string? rate) => Enum.TryParse<ExchangeRate>(rate, true, out var result) ? result : defaultRate;
-
-    // TODO: we could inject the converter service here instead of creating a new instance, but for now this is fine
-    private Converter converter = new();
 
     private void HandleSubmit() {
 
