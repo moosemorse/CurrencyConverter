@@ -16,23 +16,7 @@ namespace Frontend.Components.Models;
 // dependency injection for http client
 public class Converter(HttpClient httpClient)
 {
-
-    private async Task<double> getConversionAsync(ConverterInput input)
+    public async Task<double> getConversionAsync(ConverterInput input)
         => await httpClient.GetFromJsonAsync<double>($"?from={input.StartingRate}&to={input.TargetRate}&amount={input.Amount}");
-    
-    public double submit(ConverterInput input)
-    {
-
-        // rough way to check that data is being passed correctly, could be done using Logger
-        Console.WriteLine("All user input:");
-        Console.WriteLine($"Starting rate: {input.StartingRate}");
-        Console.WriteLine($"Amount: {input.Amount}");
-        Console.WriteLine($"Target rate: {input.TargetRate}");  
-
-        //Task<double> result = getConversionAsync(input);
-
-        //return result.GetAwaiter().GetResult();
-        return 100;
-    }
     
 }

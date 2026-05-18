@@ -137,7 +137,7 @@ else
 
         ArgumentNullException.ThrowIfNull(userInput, nameof(userInput));
 
-        double result = converter.submit(userInput);
+        var result = converter.getConversionAsync(userInput);
 
         // note: for the history this took for ever and i think fix was just to add interactiveserver ??
         NavigateManager.NavigateTo(getURI());
