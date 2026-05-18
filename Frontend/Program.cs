@@ -1,4 +1,5 @@
 using Frontend.Components;
+using Frontend.Components.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,8 +9,13 @@ builder.Services.AddRazorComponents()
 
 var calculatorApiUrl = "http://localhost:5054";
 
-//builder.Services.AddHttpClient, this is for dependency injection of http client
-//so if i AddSingleton<CalculatorService>() then I can inject into my service the api client
+// variables need to be renamed to be more specific, e.g. ConverterClient or smth but for now its ok
+
+builder.Services.AddHttpClient<Converter>(
+    client => client.BaseAddress = new Uri(calculatorApiUrl)
+);
+
+builder.Services.AddSingleton<Converter>();
 
 var app = builder.Build();
 
