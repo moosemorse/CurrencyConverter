@@ -1,6 +1,7 @@
 using CurrencyConverter.Web.Core.Interfaces;
-using CurrencyConverter.Web.Infrastructure.Services;
+using CurrencyConverter.Web.Infrastructure.Adapters;
 using CurrencyConverter.Web.UI;
+using CurrencyConverter.Web.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,8 +9,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddHttpClient<ICurrencyConverterService, CurrencyConverterService>();
-builder.Services.AddHttpClient<IPrettyPrintService, PrettyPrintService>();
+var currencyConverterServiceAPI = builder.Configuration["CurrencyConverterServiceAPIBase"] ?? throw new InvalidOperationException("CurrencyConverterServiceAPIBase configuration is missing.");
+builder.Services.AddHttpClient<IExchangeRateProvider, FawazAhmedExchangeAdapter>(client =>
+{
+    client.BaseAddress = new Uri(currencyConverterServiceAPI);
+});
+
+var prettyPrintServiceAPI = builder.Configuration["PrettyPrintServiceAPI"] ?? throw new InvalidOperationException("PrettyPrintServiceAPI configuration is missing.");
+builder.Services.AddHttpClient<ICurrencyNameProvider, FawazAhmedNameAdapter>(client =>
+{
+    client.BaseAddress = new Uri(prettyPrintServiceAPI);
+});
+
+builder.Services.AddScoped<IPrettyPrintService, PrettyPrintService>();
+builder.Services.AddScoped<ICurrencyConverterService, CurrencyConverterService>();
 
 var app = builder.Build();
 

@@ -16,6 +16,8 @@
 @inject NavigationManager Nav
 @inject ICurrencyConverterService CurrencyConverterService
 @inject IPrettyPrintService PrettyPrintService
+@inject IExchangeRateProvider ExchangeRateProvider
+@inject ICurrencyNameProvider CurrencyNameProvider
 
 <!-- Note: If using SSR, use stream rendering, =>
      helps interactivity by loading what's available while waiting for backend
