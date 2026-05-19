@@ -8,9 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddHttpClient();
-
-builder.Services.AddScoped<ICurrencyConverterService, CurrencyConverterService>();
+builder.Services.AddHttpClient<ICurrencyConverterService, CurrencyConverterService>();
+builder.Services.AddHttpClient<IPrettyPrintService, PrettyPrintService>();
 
 var app = builder.Build();
 
