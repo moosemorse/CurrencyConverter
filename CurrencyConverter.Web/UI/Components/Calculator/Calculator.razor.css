@@ -1,0 +1,73 @@
+/* Container & Card Layout */
+.calc-container {
+    max-width: 600px;
+    margin: 1.5rem auto 3rem auto;
+}
+
+.calc-card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175);
+    background-color: white;
+}
+
+.calc-card-body {
+    padding: 1.5rem;
+}
+
+/* Tablet and larger screens get more padding inside the card */
+@media (min-width: 768px) {
+    .calc-card-body {
+        padding: 3rem;
+    }
+}
+
+/* Inputs & Labels */
+.calc-label {
+    font-weight: 700;
+    color: #6c757d; /* Bootstrap text-muted */
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.calc-input {
+    background-color: #f8f9fa; /* Bootstrap bg-light */
+    border-radius: 0.5rem;
+    height: 3.5rem; /* Larger, modern input height */
+    font-size: 1.1rem;
+}
+
+/* Button */
+.calc-btn {
+    width: 100%;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+    height: 3.5rem;
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+}
+
+/* Result Banner */
+.calc-result-banner {
+    background-color: #f0fdf4; 
+    border: 2px solid #26b050;
+    border-radius: 1rem;
+    padding: 1rem;
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.calc-result-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.calc-result-value {
+    color: #198754; /* Bootstrap text-success */
+    font-weight: 700;
+    margin: 0;
+    font-size: 2rem;
+}
