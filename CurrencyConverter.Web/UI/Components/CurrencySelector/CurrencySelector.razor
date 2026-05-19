@@ -1,0 +1,30 @@
+@using CurrencyConverter.Web.Core.Entities
+
+<div class="col-6">
+    <label class="calc-label" for="@Id">@Label</label>
+    <select id="@Id" class="form-select calc-input" value="@Value" @onchange="OnInputChanged">
+        @foreach (var rate in AllRates)
+        {
+            <option value="@rate">@rate</option>
+        }
+    </select>
+</div>
+
+@code {
+    [Parameter] public string Id { get; set; } = string.Empty;
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public ExchangeRate Value { get; set; }
+    [Parameter] public EventCallback<ExchangeRate> ValueChanged { get; set; }
+
+    // This MUST be inside the @code block, with no [Inject] above it!
+    private readonly ExchangeRate[] AllRates = Enum.GetValues<ExchangeRate>();
+
+    private async Task OnInputChanged(ChangeEventArgs e)
+    {
+        if (Enum.TryParse<ExchangeRate>(e.Value?.ToString(), out var result))
+        {
+            Value = result;
+            await ValueChanged.InvokeAsync(Value);
+        }
+    }
+}
