@@ -1,4 +1,5 @@
-namespace Frontend.Components.Models;
+namespace CurrencyConverter.Web.Core.Entities;
+
 
 public enum ExchangeRate
 {

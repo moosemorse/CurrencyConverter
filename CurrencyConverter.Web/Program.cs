@@ -1,5 +1,6 @@
-using Frontend.Components;
-using Frontend.Components.Models;
+using CurrencyConverter.Web.Core.Interfaces;
+using CurrencyConverter.Web.Infrastructure.Services;
+using CurrencyConverter.Web.UI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,15 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// Configuration to connect to client
-var calculatorApiUrl = builder.Configuration["ConverterAPIUrl"] ??
-    throw new Exception("ConverterAPIUrl not found in configuration");
+builder.Services.AddHttpClient();
 
-// variables need to be renamed to be more specific, e.g. ConverterClient or smth but for now its ok
-
-builder.Services.AddHttpClient<Converter>(
-    client => client.BaseAddress = new Uri(calculatorApiUrl)
-);
+builder.Services.AddScoped<ICurrencyConverterService, CurrencyConverterService>();
 
 var app = builder.Build();
 

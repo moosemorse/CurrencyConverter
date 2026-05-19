@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace CurrencyConverter.Frontend.Converters;
+namespace CurrencyConverter.Web.Infrastructure.JSONConverters;
 
 /* 
     Not needed in my case but worth knowing about -- from my tutorial. For cases

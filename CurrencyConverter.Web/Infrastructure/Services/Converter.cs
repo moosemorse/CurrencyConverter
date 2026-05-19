@@ -1,4 +1,6 @@
-namespace Frontend.Components.Models;
+using CurrencyConverter.Web.Core.Interfaces;
+
+namespace CurrencyConverter.Web.Infrastructure.Services;
 
 /* 
     Some notes:
@@ -14,9 +16,7 @@ namespace Frontend.Components.Models;
 */
 
 // dependency injection for http client
-public class Converter(HttpClient httpClient)
+public class CurrencyConverterService(HttpClient httpClient) : ICurrencyConverterService
 {
-    public async Task<double> getConversionAsync(ConverterInput input)
-        => await httpClient.GetFromJsonAsync<double>($"?from={input.StartingRate}&to={input.TargetRate}&amount={input.Amount}");
-    
+    public async Task<double> getConversionAsync(IConverterInput input) => input.Amount ?? 0;
 }
