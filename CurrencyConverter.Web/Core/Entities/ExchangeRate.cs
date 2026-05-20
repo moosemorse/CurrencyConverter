@@ -5,6 +5,14 @@ namespace CurrencyConverter.Web.Core.Entities;
 public enum ExchangeRate
 {
     GBP,
-    EUR
+    EUR,
+    USD,
+    JPY,
+    AUD,
+    CAD,
+    CHF,
+    CNY,
+    SEK,
+    NZD
 }
  
